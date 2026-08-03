@@ -15,10 +15,14 @@
 
 這個公開 key 是正式服務的可撤換展示憑證，不是內部維運密鑰；展示結束後可直接輪替或停用。
 
+Notebook 只送出原始合成病歷，不預填 SNOMED 或 ICD。正式服務會依序執行病歷整理、3 輪實體辨識、術語連結與 SNOMED 驗證。
+
 ## 驗收條件
 
 Notebook 會自動確認：
 
-- `POST` 成功且編碼結果不為空
-- 使用同一個 `request_id` 執行 `GET` 成功
+- `POST` 成功，且有整理後病歷與 SNOMED 編碼結果
+- `pipeline_version` 為完整 `txt_ner` 流程，NER 執行 3 輪
+- 所有編碼來源皆為 `TXT_NER`，不接受預填碼或 fallback
+- 使用同一個 `request_id` 執行 `GET`，且結果與 `POST` 一致
 - Colab CORS 回應正確
