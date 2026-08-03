@@ -8,12 +8,12 @@
 
 ## 展示 API
 
-- Base URL：`https://fhircsh.itri-nlp.tw/code_api/smartcoder-demo`
+- Base URL：`https://fhircsh.itri-nlp.tw/code_api/smartcoder`
 - 送出編碼：`POST /api/v1/snomed/coding`
 - 查詢結果：`GET /api/v1/snomed/results/{request_id}`
-- 認證：Notebook 已內建公開展示用 `X-API-Key`
+- 認證：Notebook 已內建可更換的公開展示用 `X-API-Key`，直接呼叫中山醫 SmartCoder 正式服務
 
-這個 key 不是正式環境憑證。展示服務與院內服務分離，有獨立記錄與請求限流；必要時可更換。若多人同時操作而收到 `429`，請稍候再執行。
+這個公開 key 是正式服務的可撤換展示憑證，不是內部維運密鑰；展示結束後可直接輪替或停用。
 
 ## 驗收條件
 
@@ -22,4 +22,3 @@ Notebook 會自動確認：
 - `POST` 成功且編碼結果不為空
 - 使用同一個 `request_id` 執行 `GET` 成功
 - Colab CORS 回應正確
-
