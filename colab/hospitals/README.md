@@ -1,16 +1,14 @@
-# SmartCoder 醫院正式服務 Colab
+# SmartCoder 正式服務 Colab
 
-這個公開 repository 提供 12 家院別的 SmartCoder 正式整合 notebook。每份請求只送出 `request_id`、合成原始病歷與 `output_format=simple`，不預填 SNOMED CT 或 ICD-10 參考碼。
-
-Notebook 會檢查完整病例整理、3 輪 NER、術語連結、SNOMED CT 驗證、results GET 一致性與 Colab CORS。只有所有檢查都完成時，才會顯示「正式流程驗收通過」。
+這 12 份 notebook 固定呼叫各院設定的服務入口。每份請求只包含 `request_id`、同一筆合成原始病歷與 `output_format=simple`，不帶 SNOMED CT 或 ICD-10 參考碼，並檢查完整病例整理、3 輪 NER、術語連結、results GET 與 Colab CORS。
 
 每本 notebook 只呼叫表中的單一 API base URL，不在錯誤後改呼叫其他網址、改讀另一組憑證或縮短流程。回應缺少欄位、型別不符或值不符時立即停止，不以空字典、空陣列或預設值補齊。
 
-> 僅限使用 notebook 內建的合成病例。請勿輸入真實病歷、姓名、身分證號、病歷號或其他個人資料。
+公開版本固定存放在 `dechnology/smartcoder-hospital-colab` 的 `main` branch。中山醫 notebook 已配置一組刻意公開、可撤換的 Colab access token，可直接執行；其他院別不含非公開 API key。
 
 ## 已直接驗證
 
-中山醫入口已於 2026-08-06 從正式 VM 直接完成「只送原始病歷」的全流程驗收。這本已配置可公開、可撤換的 Colab access token，可直接選「執行階段」→「全部執行」。
+中山醫入口已於 2026-08-06 直接執行完整流程並通過本頁列出的檢查。
 
 | 院別 | API base URL | Colab |
 |---|---|---|
@@ -18,7 +16,7 @@ Notebook 會檢查完整病例整理、3 輪 NER、術語連結、SNOMED CT 驗�
 
 ## 正式入口已設定，完整流程待重新驗證
 
-以下 notebook 已使用正式整合格式，但尚未用目前「只送原始病歷」的條件重新驗收。執行時需要各院自己的 API key；repository 內不含這些非公開憑證。
+以下入口已完成網址設定，但尚未以目前 notebook「只送原始病歷」的驗收條件重新執行。完成前，不視為本輪正式流程驗收通過。
 
 | 院別／入口 | API base URL | Colab |
 |---|---|---|
@@ -31,17 +29,19 @@ Notebook 會檢查完整病例整理、3 輪 NER、術語連結、SNOMED CT 驗�
 | 員榮 `yuanrung` | `https://fhirdevaz.itri-nlp.tw/yuanrung` | [開啟 Colab](https://colab.research.google.com/github/dechnology/smartcoder-hospital-colab/blob/main/colab/hospitals/yuanrung_smartcoder_api.ipynb) |
 | 長庚醫療體系 `cgh` | `https://fhirdevazure.itri-nlp.tw/cgh` | [開啟 Colab](https://colab.research.google.com/github/dechnology/smartcoder-hospital-colab/blob/main/colab/hospitals/cgh_smartcoder_api.ipynb) |
 
-## 服務目前不可用
+## 正式入口已設定，服務目前不可用
 
-以下 notebook 保留正式網址與完整驗收條件。服務恢復前會明確停止，不會把未完成流程標成通過。
+這三份 notebook 保留正式網址與完整驗收條件。服務恢復前，notebook 會顯示目前狀態並停止，不會把未完成流程標成通過。
 
 | 院別／入口 | API base URL | 目前狀態 | Colab |
 |---|---|---|---|
-| 成大 `nckuh` | `https://fhircgh.itri-nlp.tw/code_api/nckuh` | 尚未完成新版切換 | [開啟 Colab](https://colab.research.google.com/github/dechnology/smartcoder-hospital-colab/blob/main/colab/hospitals/nckuh_smartcoder_api.ipynb) |
-| 高醫 `kmuh` | `https://fhircgh.itri-nlp.tw/code_api/kmuh` | 尚未完成新版切換 | [開啟 Colab](https://colab.research.google.com/github/dechnology/smartcoder-hospital-colab/blob/main/colab/hospitals/kmuh_smartcoder_api.ipynb) |
+| 成大 `nckuh` | `https://fhircgh.itri-nlp.tw/code_api/nckuh` | 尚未完成新版切換，完整流程目前不可用 | [開啟 Colab](https://colab.research.google.com/github/dechnology/smartcoder-hospital-colab/blob/main/colab/hospitals/nckuh_smartcoder_api.ipynb) |
+| 高醫 `kmuh` | `https://fhircgh.itri-nlp.tw/code_api/kmuh` | 尚未完成新版切換，完整流程目前不可用 | [開啟 Colab](https://colab.research.google.com/github/dechnology/smartcoder-hospital-colab/blob/main/colab/hospitals/kmuh_smartcoder_api.ipynb) |
 | 馬偕醫療體系 `mmh` | `https://fhirmmh.itri-nlp.tw/code_api/smartcoder` | 服務目前未啟用 | [開啟 Colab](https://colab.research.google.com/github/dechnology/smartcoder-hospital-colab/blob/main/colab/hospitals/mmh_smartcoder_api.ipynb) |
 
-## 驗收條件
+## Notebook 會檢查什麼
+
+每份 notebook 都會確認：
 
 - POST 與 GET 皆直接回傳 HTTP 200，不接受網址轉向，並檢查 Colab CORS。
 - `polished_clinical_note` 不為空，且整理後內容不得與原始病歷相同。
@@ -49,6 +49,28 @@ Notebook 會檢查完整病例整理、3 輪 NER、術語連結、SNOMED CT 驗�
 - 每筆編碼的 `concept_id`、`term`、`category`、`confidence` 與 `source` 都必須完整，來源固定為 `TXT_NER`，且 concept 不得重複。
 - 回應包含胸痛 SNOMED CT concept `29857009`。
 - results GET 狀態為 `completed`，且完整結果與 POST 回應逐欄相同。
-- 任一必要欄位缺少、型別不符或值不符時立即停止。
+- 所有必要欄位的型別與內容都符合契約；任一欄位缺少就停止。
 
-中山醫可直接執行，只使用 notebook 內的公開 Colab access token。其他已啟用入口只會透過隱藏輸入欄要求該院 API key，不讀取環境變數。
+看到 `正式流程驗收通過`，才代表該次執行完成全部檢查。
+
+## API key
+
+- 中山醫：直接執行，不需輸入 key。Notebook 使用可公開、可撤換的 Colab access token。
+- 其他已啟用入口：第一個程式區塊只會透過隱藏輸入欄要求該院 API key，不讀取環境變數。
+- 服務目前不可用的入口：Notebook 會顯示目前狀態並停止；服務恢復後才會顯示隱藏輸入欄。
+
+不要把其他院別的非公開 key 寫入 notebook、Google Drive 或 GitHub。
+
+## 維護方式
+
+在 repository 根目錄產生 notebook：
+
+```bash
+python3 tools/generate_hospital_colab_notebooks.py
+```
+
+檢查 notebook 是否與產生器一致：
+
+```bash
+python3 tools/generate_hospital_colab_notebooks.py --check
+```
